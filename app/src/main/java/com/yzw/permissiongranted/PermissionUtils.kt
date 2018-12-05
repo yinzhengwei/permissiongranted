@@ -20,8 +20,13 @@ class PermissionUtils {
 
     companion object {
 
-        fun permissionCheck(context: Activity, permission: Array<String>) {
-            permissionCheck(context, permission, "", true)
+        fun permissionCheck(
+            context: Activity,
+            permission: Array<String>,
+            successfulCallback: () -> Unit,
+            failCallback: () -> Unit
+        ) {
+            permissionCheck(context, permission, "", true, successfulCallback, failCallback)
         }
 
         /**
@@ -31,12 +36,18 @@ class PermissionUtils {
          * @param isAllWaysRequest 是否强制
          *
          */
+        lateinit var successfulCallback: () -> Unit
+        lateinit var failCallback: () -> Unit
         fun permissionCheck(
             context: Activity,
             permission: Array<String>,
             permissionName: String,
-            isAllWaysRequest: Boolean
+            isAllWaysRequest: Boolean,
+            successfulCallback: () -> Unit,
+            failCallback: () -> Unit
         ) {
+            Companion.successfulCallback = successfulCallback
+            Companion.failCallback = failCallback
             context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)

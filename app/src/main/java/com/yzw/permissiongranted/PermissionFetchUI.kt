@@ -44,6 +44,7 @@ class PermissionFetchUI : Activity() {
         }
 
         Toast.makeText(this, "${permissionName}权限已全部获取成功", Toast.LENGTH_SHORT).show()
+        PermissionUtils.successfulCallback()
         finish()
     }
 
@@ -69,6 +70,10 @@ class PermissionFetchUI : Activity() {
                     //如果点击了取消，则再次打开权限
                     checkPermission()
                 }
+            else {
+                PermissionUtils.failCallback()
+                Log.d(javaClass.name, "已拒绝申请")
+            }
         }
     }
 
