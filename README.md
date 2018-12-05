@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permissiongranted:5.0'
+	implementation 'com.github.yinzhengwei:permissiongranted:6.0'
 	
 }
 
@@ -38,11 +38,19 @@ dependencies {
 参数五是失败的回调)：
 
 方式一： 
-PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", {}, {})
+PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", {
+    Log.d("permissionCheck","successful")
+}, {
+    Log.d("permissionCheck","faile")
+})
 
 方式二（这里的第四个参数表示是否强制用户打开权限）：
 
-PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", false, {}, {})
+PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", false, {
+    Log.d("permissionCheck","successful")
+}, {
+    Log.d("permissionCheck","faile")
+})
 
 
 
