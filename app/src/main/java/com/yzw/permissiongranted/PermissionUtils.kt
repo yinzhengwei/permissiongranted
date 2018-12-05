@@ -21,13 +21,26 @@ class PermissionUtils {
     companion object {
 
         fun permissionCheck(context: Activity, permission: Array<String>) {
-            permissionCheck(context, permission, "")
+            permissionCheck(context, permission, "", true)
         }
 
-        fun permissionCheck(context: Activity, permission: Array<String>, permissionName: String) {
+        /**
+         * @param context 上下文
+         * @param permissionName 权限集合名称（例如：相机）
+         * @param permission 权限集合
+         * @param isAllWaysRequest 是否强制
+         *
+         */
+        fun permissionCheck(
+            context: Activity,
+            permission: Array<String>,
+            permissionName: String,
+            isAllWaysRequest: Boolean
+        ) {
             context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)
+                putExtra("isAllWaysRequest", isAllWaysRequest)
             })
         }
 
