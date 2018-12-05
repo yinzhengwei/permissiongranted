@@ -64,7 +64,11 @@ class PermissionFetchUI : Activity() {
             if (isAllWaysRequest) {
                 //勾选了对话框中”Don’t ask again”的选项, 返回false,则走自定义弹窗；否则不走自定义弹窗，去请求系统弹窗
                 for ( deniedPermission in permissions) {
-                    val flag = shouldShowRequestPermissionRationale(deniedPermission);
+                    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        shouldShowRequestPermissionRationale(deniedPermission)
+                    } else {
+                       true
+                    }
                     if (!flag) {
                         //拒绝授权
                         showPermissions(this, permissionName, REQUESTCODE) {
