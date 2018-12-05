@@ -42,8 +42,6 @@ class PermissionFetchUI : Activity() {
                 return
             }
         }
-
-        Toast.makeText(this, "${permissionName}权限已全部获取成功", Toast.LENGTH_SHORT).show()
         PermissionUtils.successfulCallback()
         finish()
     }
