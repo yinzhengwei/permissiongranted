@@ -1,4 +1,4 @@
-# permission
+# permissionGranted
 Android动态权限检测和申请管理
 
 # 配置方式
@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permission:v1.0'
+	implementation 'com.github.yinzhengwei:permissiongranted:1.0'
 	
 }
 
