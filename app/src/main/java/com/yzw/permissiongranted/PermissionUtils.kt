@@ -20,13 +20,16 @@ class PermissionUtils {
 
     companion object {
 
+        lateinit var successfulCallback: () -> Unit
+        lateinit var failCallback: () -> Unit
         fun permissionCheck(
             context: Activity,
             permission: Array<String>,
+            permissionName: String,
             successfulCallback: () -> Unit,
             failCallback: () -> Unit
         ) {
-            permissionCheck(context, permission, "", true, successfulCallback, failCallback)
+            permissionCheck(context, permission, permissionName, true, successfulCallback, failCallback)
         }
 
         /**
@@ -34,10 +37,9 @@ class PermissionUtils {
          * @param permissionName 权限集合名称（例如：相机）
          * @param permission 权限集合
          * @param isAllWaysRequest 是否强制
-         *
+         * @param successfulCallback 权限申请成功的回调
+         * @param failCallback 权限申请失败的回调
          */
-        lateinit var successfulCallback: () -> Unit
-        lateinit var failCallback: () -> Unit
         fun permissionCheck(
             context: Activity,
             permission: Array<String>,
