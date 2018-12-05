@@ -1,4 +1,4 @@
-# permission
+# permissionGranted
 Android动态权限检测和申请管理
 
 # 配置方式
