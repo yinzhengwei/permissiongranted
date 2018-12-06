@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permissiongranted:12.0.0'
+	implementation 'com.github.yinzhengwei:permissiongranted:13.0.0'
 	
 }
 
@@ -34,22 +34,26 @@ dependencies {
 参数一表示上下文、
 参数二表示要开启 的权限集合、
 第三个参数表示要申请的权限名称(如：相机)，当权限遭到用户拒绝时，弹窗 中的提示语里使用，默认不传表示不具体说明哪个权限、
-参数四是同意的回调、
-参数五是拒绝的回调)：
+参数四是操作结果的回调)：
 
 方式一： 
-PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", {
-    Log.d("permissionCheck","同意")
-}, {
-    Log.d("permissionCheck","拒绝")
+PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : PermissionGrantedCallback {
+    override fun granted() {
+        Log.d("permissionCheck", "同意")
+    }
+    override fun denied() {
+        Log.d("permissionCheck", "拒绝")
+    }
 })
 
 方式二（这里的第四个参数表示是否强制用户打开权限）：
-
-PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", false, {
-    Log.d("permissionCheck","同意")
-}, {
-    Log.d("permissionCheck","拒绝")
+PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", false, object : PermissionGrantedCallback {
+    override fun granted() {
+        Log.d("permissionCheck", "同意")
+    }
+    override fun denied() {
+        Log.d("permissionCheck", "拒绝")
+    }
 })
 
 

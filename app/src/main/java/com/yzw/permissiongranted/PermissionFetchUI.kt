@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import com.yzw.permissiongranted.PermissionGrantedCallback.denied
-import com.yzw.permissiongranted.PermissionGrantedCallback.granted
-import com.yzw.permissiongranted.PermissionUtils.Companion.isOpenPermisson
-import com.yzw.permissiongranted.PermissionUtils.Companion.openPermission
-import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
+import com.yzw.permissiongranted.PermissionUtils.isOpenPermisson
+import com.yzw.permissiongranted.PermissionUtils.openPermission
+import com.yzw.permissiongranted.PermissionUtils.showPermissions
 
 /**
  * Create by yinzhengwei on 2018/11/28
@@ -17,10 +15,10 @@ import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
  */
 class PermissionFetchUI : Activity() {
 
-    val REQUESTCODE: Int = 100
-    var psn = arrayOf<String>()
-    var permissionName = ""
-    var isAllWaysRequest = true
+    private val REQUESTCODE: Int = 100
+    private var psn = arrayOf<String>()
+    private var permissionName = ""
+    private var isAllWaysRequest = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +46,9 @@ class PermissionFetchUI : Activity() {
 
     private fun finishAtty(isSucful: Boolean) {
         if (isSucful) {
-            granted!!()
+            PermissionUtils.notify?.granted()
         } else {
-            denied!!()
+            PermissionUtils.notify?.denied()
         }
         finish()
     }
