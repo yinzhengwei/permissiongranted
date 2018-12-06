@@ -21,8 +21,6 @@ class PermissionUtils {
 
     companion object {
 
-        lateinit var successfulCallback: () -> Unit
-        lateinit var failCallback: () -> Unit
         fun permissionCheck(
             context: Activity,
             permission: Array<String>,
@@ -46,12 +44,10 @@ class PermissionUtils {
             permission: Array<String>,
             permissionName: String,
             isAllWaysRequest: Boolean,
-            successfulCallback: () -> Unit,
+            sufCallback: () -> Unit,
             failCallback: () -> Unit
         ) {
-            Companion.successfulCallback = successfulCallback
-            Companion.failCallback = failCallback
-            context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
+            context.startActivity(Intent(context, PermissionFetchUI(sufCallback, failCallback)::class.java).apply {
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)
                 putExtra("isAllWaysRequest", isAllWaysRequest)

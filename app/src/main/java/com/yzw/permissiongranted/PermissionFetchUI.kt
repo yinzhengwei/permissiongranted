@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.yzw.permissiongranted.PermissionUtils.Companion.isOpenPermisson
 import com.yzw.permissiongranted.PermissionUtils.Companion.openPermission
 import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
@@ -14,7 +13,7 @@ import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
  * Create by yinzhengwei on 2018/11/28
  * @Function 权限名称、是否强制打开、弹窗提示内容(callback)
  */
-class PermissionFetchUI : Activity() {
+class PermissionFetchUI(var sufCallback: () -> Unit, var failCallback: () -> Unit) : Activity() {
 
     val REQUESTCODE: Int = 100
     var psn = arrayOf<String>()
@@ -47,9 +46,9 @@ class PermissionFetchUI : Activity() {
 
     private fun finishAtty(isSucful: Boolean) {
         if (isSucful) {
-            PermissionUtils.successfulCallback()
+            sufCallback()
         } else {
-            PermissionUtils.failCallback()
+            failCallback()
         }
         finish()
     }
