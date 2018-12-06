@@ -13,16 +13,18 @@ import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
  * Create by yinzhengwei on 2018/11/28
  * @Function 权限名称、是否强制打开、弹窗提示内容(callback)
  */
-class PermissionFetchUI(var sufCallback: () -> Unit, var failCallback: () -> Unit) : Activity() {
+class PermissionFetchUI : Activity() {
 
     val REQUESTCODE: Int = 100
     var psn = arrayOf<String>()
     var permissionName = ""
     var isAllWaysRequest = true
+    var callback: PermissionGrantedCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        callback = intent.getSerializableExtra("callback") as PermissionGrantedCallback?
         psn = intent.getStringArrayExtra("psn")
         permissionName = intent.getStringExtra("permissionName")
         isAllWaysRequest = intent.getBooleanExtra("isAllWaysRequest", true)
@@ -46,9 +48,9 @@ class PermissionFetchUI(var sufCallback: () -> Unit, var failCallback: () -> Uni
 
     private fun finishAtty(isSucful: Boolean) {
         if (isSucful) {
-            sufCallback()
+            callback?.granted()
         } else {
-            failCallback()
+            callback?.denied()
         }
         finish()
     }

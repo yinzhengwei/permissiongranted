@@ -25,10 +25,10 @@ class PermissionUtils {
             context: Activity,
             permission: Array<String>,
             permissionName: String,
-            successfulCallback: () -> Unit,
-            failCallback: () -> Unit
+            granted: () -> Unit,
+            denied: () -> Unit
         ) {
-            permissionCheck(context, permission, permissionName, true, successfulCallback, failCallback)
+            permissionCheck(context, permission, permissionName, true, granted, denied)
         }
 
         /**
@@ -36,18 +36,28 @@ class PermissionUtils {
          * @param permissionName 权限集合名称（例如：相机）
          * @param permission 权限集合
          * @param isAllWaysRequest 是否强制
-         * @param successfulCallback 权限申请成功的回调
-         * @param failCallback 权限申请失败的回调
+         * @param granted 权限申请同意的回调
+         * @param denied 权限申请拒绝的回调
          */
         fun permissionCheck(
             context: Activity,
             permission: Array<String>,
             permissionName: String,
             isAllWaysRequest: Boolean,
-            sufCallback: () -> Unit,
-            failCallback: () -> Unit
+            granted: () -> Unit,
+            denied: () -> Unit
         ) {
-            context.startActivity(Intent(context, PermissionFetchUI(sufCallback, failCallback)::class.java).apply {
+            context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
+                putExtra("callback", object : PermissionGrantedCallback {
+
+                    override fun granted() {
+                        granted()
+                    }
+
+                    override fun denied() {
+                        denied()
+                    }
+                })
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)
                 putExtra("isAllWaysRequest", isAllWaysRequest)
