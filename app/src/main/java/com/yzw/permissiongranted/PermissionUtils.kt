@@ -25,7 +25,7 @@ object PermissionUtils {
         context: Activity,
         permission: Array<String>,
         permissionName: String,
-        permissionGrantedCallback: PermissionGrantedCallback
+        permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         permissionCheck(context, permission, permissionName, true, permissionGrantedCallback)
     }
@@ -43,7 +43,7 @@ object PermissionUtils {
         permission: Array<String>,
         permissionName: String,
         isAllWaysRequest: Boolean,
-        permissionGrantedCallback: PermissionGrantedCallback
+        permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         notify = permissionGrantedCallback
         context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {

@@ -45,11 +45,12 @@ class PermissionFetchUI : Activity() {
     }
 
     private fun finishAtty(isSucful: Boolean) {
-        if (isSucful) {
-            PermissionUtils.notify?.granted()
-        } else {
-            PermissionUtils.notify?.denied()
-        }
+        if (PermissionUtils.notify != null)
+            if (isSucful) {
+                PermissionUtils.notify?.granted()
+            } else {
+                PermissionUtils.notify?.denied()
+            }
         finish()
     }
 
