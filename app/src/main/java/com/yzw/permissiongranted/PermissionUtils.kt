@@ -35,8 +35,7 @@ object PermissionUtils {
      * @param permissionName 权限集合名称（例如：相机）
      * @param permission 权限集合
      * @param isAllWaysRequest 是否强制
-     * @param granted 权限申请同意的回调
-     * @param denied 权限申请拒绝的回调
+     * @param permissionGrantedCallback 权限申请的回调
      */
 
     fun permissionCheck(
