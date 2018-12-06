@@ -36,7 +36,10 @@ dependencies {
 第三个参数表示要申请的权限名称(如：相机)，当权限遭到用户拒绝时，弹窗 中的提示语里使用，默认不传表示不具体说明哪个权限、
 参数四是操作结果的回调)：
 
-方式一： 
+方式一：
+PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", null)
+
+方式二：
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : PermissionGrantedCallback {
     override fun granted() {
         Log.d("permissionCheck", "同意")
@@ -46,7 +49,7 @@ PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : Permiss
     }
 })
 
-方式二（这里的第四个参数表示是否强制用户打开权限）：
+方式三（这里的第四个参数表示是否强制用户打开权限）：
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", false, object : PermissionGrantedCallback {
     override fun granted() {
         Log.d("permissionCheck", "同意")
