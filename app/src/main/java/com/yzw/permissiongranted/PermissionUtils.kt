@@ -1,6 +1,7 @@
 package com.yzw.permissiongranted
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -68,7 +69,7 @@ class PermissionUtils {
         }
 
         //判断某个权限是否已打开
-        fun isOpenPermisson(context: Activity, permission: String): Boolean {
+        fun isOpenPermisson(context: Context, permission: String): Boolean {
             /**
              * 一般android6以下会在安装时自动获取权限,但在小米机上，可能通过用户权限管理更改权限,checkSelfPermission会始终是true，
              * targetSdkVersion<23时 即便运行在android6及以上设备 ContextWrapper.checkSelfPermission和Context.checkSelfPermission失效
@@ -92,7 +93,7 @@ class PermissionUtils {
          * permissions 权限数组
          * return true-表示全部打开了  false-表示有没有打开的
          */
-        fun isOpenPermisson(context: Activity, permission: Array<String>): Boolean {
+        fun isOpenPermisson(context: Context, permission: Array<String>): Boolean {
             if (permission.isEmpty()) {
                 return false
             }

@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permissiongranted:10'
+	implementation 'com.github.yinzhengwei:permissiongranted:10.0'
 	
 }
 
