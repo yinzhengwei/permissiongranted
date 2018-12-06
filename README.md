@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permissiongranted:11.0.0'
+	implementation 'com.github.yinzhengwei:permissiongranted:12.0.0'
 	
 }
 
@@ -39,9 +39,9 @@ dependencies {
 
 方式一： 
 PermissionUtils.permissionCheck(context, permission_CAMERA, "xxx", {
-    Log.d("permissionCheck","successful")
+    Log.d("permissionCheck","同意")
 }, {
-    Log.d("permissionCheck","faile")
+    Log.d("permissionCheck","拒绝")
 })
 
 方式二（这里的第四个参数表示是否强制用户打开权限）：

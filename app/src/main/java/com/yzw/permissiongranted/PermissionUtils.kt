@@ -47,17 +47,9 @@ class PermissionUtils {
             granted: () -> Unit,
             denied: () -> Unit
         ) {
+            PermissionGrantedCallback.granted = granted
+            PermissionGrantedCallback.denied = denied
             context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
-                putExtra("callback", object : PermissionGrantedCallback {
-
-                    override fun granted() {
-                        granted()
-                    }
-
-                    override fun denied() {
-                        denied()
-                    }
-                })
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)
                 putExtra("isAllWaysRequest", isAllWaysRequest)

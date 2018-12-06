@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import com.yzw.permissiongranted.PermissionGrantedCallback.denied
+import com.yzw.permissiongranted.PermissionGrantedCallback.granted
 import com.yzw.permissiongranted.PermissionUtils.Companion.isOpenPermisson
 import com.yzw.permissiongranted.PermissionUtils.Companion.openPermission
 import com.yzw.permissiongranted.PermissionUtils.Companion.showPermissions
@@ -19,12 +21,10 @@ class PermissionFetchUI : Activity() {
     var psn = arrayOf<String>()
     var permissionName = ""
     var isAllWaysRequest = true
-    var callback: PermissionGrantedCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        callback = intent.getSerializableExtra("callback") as PermissionGrantedCallback?
         psn = intent.getStringArrayExtra("psn")
         permissionName = intent.getStringExtra("permissionName")
         isAllWaysRequest = intent.getBooleanExtra("isAllWaysRequest", true)
@@ -48,9 +48,9 @@ class PermissionFetchUI : Activity() {
 
     private fun finishAtty(isSucful: Boolean) {
         if (isSucful) {
-            callback?.granted()
+            granted!!()
         } else {
-            callback?.denied()
+            denied!!()
         }
         finish()
     }
