@@ -46,11 +46,17 @@ object PermissionUtils {
         permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         notify = permissionGrantedCallback
-        context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
-            putExtra("psn", permission)
-            putExtra("permissionName", permissionName)
-            putExtra("isAllWaysRequest", isAllWaysRequest)
-        })
+
+        //如果传进来的权限都打开了就直接回调成功的结果，不需要跳转了
+        if (isOpenPermisson(context, permission)) {
+            notify?.granted()
+        } else {
+            context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
+                putExtra("psn", permission)
+                putExtra("permissionName", permissionName)
+                putExtra("isAllWaysRequest", isAllWaysRequest)
+            })
+        }
     }
 
     //打开某个权限
