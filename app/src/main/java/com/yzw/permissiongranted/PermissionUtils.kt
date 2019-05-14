@@ -1,6 +1,10 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.yzw.permissiongranted
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -9,8 +13,13 @@ import android.net.Uri
 import android.os.Binder
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.PermissionChecker
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+
 
 /**
  * Create by yinzhengwei on 2018/11/27
@@ -22,10 +31,10 @@ object PermissionUtils {
     var notify: PermissionGrantedCallback? = null
 
     fun permissionCheck(
-        context: Activity,
-        permission: Array<String>,
-        permissionName: String,
-        permissionGrantedCallback: PermissionGrantedCallback?
+            context: Activity,
+            permission: Array<String>,
+            permissionName: String,
+            permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         permissionCheck(context, permission, permissionName, true, permissionGrantedCallback)
     }
@@ -39,11 +48,11 @@ object PermissionUtils {
      */
 
     fun permissionCheck(
-        context: Activity,
-        permission: Array<String>,
-        permissionName: String,
-        isAllWaysRequest: Boolean,
-        permissionGrantedCallback: PermissionGrantedCallback?
+            context: Activity,
+            permission: Array<String>,
+            permissionName: String,
+            isAllWaysRequest: Boolean,
+            permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         notify = permissionGrantedCallback
 
@@ -72,17 +81,20 @@ object PermissionUtils {
     //判断某个权限是否已打开
     fun isOpenPermisson(context: Context, permission: String): Boolean {
         /**
+         * 检查权限是否获取（android6.0及以上系统可能默认关闭权限，且没提示）
+         *
          * 一般android6以下会在安装时自动获取权限,但在小米机上，可能通过用户权限管理更改权限,checkSelfPermission会始终是true，
          * targetSdkVersion<23时 即便运行在android6及以上设备 ContextWrapper.checkSelfPermission和Context.checkSelfPermission失效
          * 返回值始终为PERMISSION_GRANTED,此时必须使用PermissionChecker.checkSelfPermission
          */
-        return if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+        return if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED &&
+                context.packageManager.checkPermission(permission, context.packageName) == PackageManager.PERMISSION_GRANTED) {
             PermissionChecker.checkPermission(
-                context,
-                permission,
-                Binder.getCallingPid(),
-                Binder.getCallingUid(),
-                context.packageName
+                    context,
+                    permission,
+                    Binder.getCallingPid(),
+                    Binder.getCallingUid(),
+                    context.packageName
             ) == PackageManager.PERMISSION_GRANTED
         } else {
             false
@@ -120,7 +132,7 @@ object PermissionUtils {
 
     //权限设置提示框
     fun showPermissions(mContext: Activity, permissionName: String, requestCode: Int, callback: (Boolean) -> Unit) {
-        val dialog = android.app.AlertDialog.Builder(mContext).create()
+        val dialog = android.app.AlertDialog.Builder(mContext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT).create()
         dialog.setCancelable(false)
         dialog.setTitle("提示")
         dialog.setMessage("需要手动开启${permissionName}权限才能使用")
@@ -130,8 +142,8 @@ object PermissionUtils {
         }
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确认") { _, _ ->
             dialog.dismiss()
-            callback(false)
             gotoPerMissionSetting(mContext, requestCode)
+            callback(false)
         }
         dialog.show()
     }
@@ -141,10 +153,73 @@ object PermissionUtils {
      * @param context
      */
     fun gotoPerMissionSetting(context: Activity, requestCode: Int) {
-        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).run {
-            data = Uri.parse("package:${context.packageName}")
-            context.startActivityForResult(this, requestCode)
+        var intent = Intent()
+        try {
+            /**
+             * 获取手机厂商
+             */
+            when (android.os.Build.BRAND) {
+                "vivo", "VIVO" -> intent = context.packageManager.getLaunchIntentForPackage("com.iqoo.secure")
+                "oppo", "OPPO" -> intent = context.packageManager.getLaunchIntentForPackage("com.oppo.safe")
+                "HUAWEI" -> {
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.permissionmanager.ui.MainActivity")
+                }
+                "Meizu" -> {
+                    intent = Intent("com.meizu.safe.security.SHOW_APPSEC")
+                    intent.addCategory(Intent.CATEGORY_DEFAULT)
+                    intent.putExtra("packageName", context.packageName)
+                }
+                "Xiaomi" -> {
+                    intent.action = "miui.intent.action.APP_PERM_EDITOR"
+                    when (getMiuiVersion()) {
+                        "V6", "V7" -> {
+                            intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity")
+                            intent.putExtra("extra_pkgname", context.packageName)
+                        }
+                        "V8", "V9" -> {
+                            intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity")
+                            intent.putExtra("extra_pkgname", context.packageName)
+                        }
+                        else -> {
+                            intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            intent.data = Uri.parse("package:${context.packageName}")
+                        }
+                    }
+                }
+                else -> {
+                    intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    intent.data = Uri.parse("package:${context.packageName}")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.data = Uri.parse("package:${context.packageName}")
         }
+        context.startActivityForResult(intent, requestCode)
+    }
+
+    private fun getMiuiVersion(): String? {
+        val propName = "ro.miui.ui.version.name"
+        val line: String
+        var input: BufferedReader? = null
+        try {
+            val p = Runtime.getRuntime().exec("getprop $propName")
+            input = BufferedReader(InputStreamReader(p.inputStream), 1024)
+            line = input.readLine()
+            input.close()
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        } finally {
+            try {
+                input!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return line
     }
 
 }
