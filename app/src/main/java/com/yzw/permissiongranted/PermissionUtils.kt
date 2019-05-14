@@ -155,30 +155,30 @@ object PermissionUtils {
             /**
              * 获取手机厂商
              */
-            when (android.os.Build.BRAND) {
-                "vivo", "VIVO" -> intent = context.packageManager.getLaunchIntentForPackage("com.iqoo.secure") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            when (android.os.Build.BRAND.toLowerCase()) {
+                "vivo" -> intent = context.packageManager.getLaunchIntentForPackage("com.iqoo.secure") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     intent.data = Uri.parse("package:${context.packageName}")
                 })
-                "oppo", "OPPO" -> intent = context.packageManager.getLaunchIntentForPackage("com.oppo.safe") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                "oppo" -> intent = context.packageManager.getLaunchIntentForPackage("com.oppo.safe") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     intent.data = Uri.parse("package:${context.packageName}")
                 })
-                "HUAWEI" -> {
+                "huawei" -> {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.permissionmanager.ui.MainActivity")
                 }
-                "Meizu" -> {
+                "meizu" -> {
                     intent = Intent("com.meizu.safe.security.SHOW_APPSEC")
                     intent.addCategory(Intent.CATEGORY_DEFAULT)
                     intent.putExtra("packageName", context.packageName)
                 }
-                "Xiaomi" -> {
+                "xiaomi" -> {
                     intent.action = "miui.intent.action.APP_PERM_EDITOR"
-                    when (getMiuiVersion()) {
-                        "V6", "V7" -> {
+                    when (getMiuiVersion().toLowerCase()) {
+                        "v6", "v7" -> {
                             intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity")
                             intent.putExtra("extra_pkgname", context.packageName)
                         }
-                        "V8", "V9" -> {
+                        "v8", "v9" -> {
                             intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity")
                             intent.putExtra("extra_pkgname", context.packageName)
                         }
@@ -201,9 +201,9 @@ object PermissionUtils {
         context.startActivityForResult(intent, requestCode)
     }
 
-    private fun getMiuiVersion(): String? {
+    private fun getMiuiVersion(): String {
         val propName = "ro.miui.ui.version.name"
-        val line: String
+        var line = ""
         var input: BufferedReader? = null
         try {
             val p = Runtime.getRuntime().exec("getprop $propName")
@@ -212,7 +212,7 @@ object PermissionUtils {
             input.close()
         } catch (ex: IOException) {
             ex.printStackTrace()
-            return null
+            return ""
         } finally {
             try {
                 input!!.close()
