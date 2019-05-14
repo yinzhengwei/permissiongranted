@@ -1,5 +1,3 @@
-@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-
 package com.yzw.permissiongranted
 
 import android.app.Activity
@@ -13,7 +11,6 @@ import android.net.Uri
 import android.os.Binder
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.PermissionChecker
 import java.io.BufferedReader
@@ -31,10 +28,10 @@ object PermissionUtils {
     var notify: PermissionGrantedCallback? = null
 
     fun permissionCheck(
-            context: Activity,
-            permission: Array<String>,
-            permissionName: String,
-            permissionGrantedCallback: PermissionGrantedCallback?
+        context: Activity,
+        permission: Array<String>,
+        permissionName: String,
+        permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         permissionCheck(context, permission, permissionName, true, permissionGrantedCallback)
     }
@@ -48,11 +45,11 @@ object PermissionUtils {
      */
 
     fun permissionCheck(
-            context: Activity,
-            permission: Array<String>,
-            permissionName: String,
-            isAllWaysRequest: Boolean,
-            permissionGrantedCallback: PermissionGrantedCallback?
+        context: Activity,
+        permission: Array<String>,
+        permissionName: String,
+        isAllWaysRequest: Boolean,
+        permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         notify = permissionGrantedCallback
 
@@ -88,13 +85,13 @@ object PermissionUtils {
          * 返回值始终为PERMISSION_GRANTED,此时必须使用PermissionChecker.checkSelfPermission
          */
         return if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED &&
-                context.packageManager.checkPermission(permission, context.packageName) == PackageManager.PERMISSION_GRANTED) {
+            context.packageManager.checkPermission(permission, context.packageName) == PackageManager.PERMISSION_GRANTED) {
             PermissionChecker.checkPermission(
-                    context,
-                    permission,
-                    Binder.getCallingPid(),
-                    Binder.getCallingUid(),
-                    context.packageName
+                context,
+                permission,
+                Binder.getCallingPid(),
+                Binder.getCallingUid(),
+                context.packageName
             ) == PackageManager.PERMISSION_GRANTED
         } else {
             false
@@ -159,8 +156,12 @@ object PermissionUtils {
              * 获取手机厂商
              */
             when (android.os.Build.BRAND) {
-                "vivo", "VIVO" -> intent = context.packageManager.getLaunchIntentForPackage("com.iqoo.secure")
-                "oppo", "OPPO" -> intent = context.packageManager.getLaunchIntentForPackage("com.oppo.safe")
+                "vivo", "VIVO" -> intent = context.packageManager.getLaunchIntentForPackage("com.iqoo.secure") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    intent.data = Uri.parse("package:${context.packageName}")
+                })
+                "oppo", "OPPO" -> intent = context.packageManager.getLaunchIntentForPackage("com.oppo.safe") ?: (Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    intent.data = Uri.parse("package:${context.packageName}")
+                })
                 "HUAWEI" -> {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.permissionmanager.ui.MainActivity")
