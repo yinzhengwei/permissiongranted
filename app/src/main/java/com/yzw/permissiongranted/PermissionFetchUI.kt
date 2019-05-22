@@ -17,16 +17,14 @@ class PermissionFetchUI : Activity() {
     private val REQUESTCODE: Int = 100
     private var psn = arrayOf<String>()
     private var permissionName = ""
-    private var isAllWaysRequest = true
+    private var isAutoTip = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         psn = intent.getStringArrayExtra("psn")
         permissionName = intent.getStringExtra("permissionName")
-        isAllWaysRequest = intent.getBooleanExtra("isAllWaysRequest", true)
-
-        //checkPermission()
+        isAutoTip = intent.getBooleanExtra("isAutoTip", true)
     }
 
     //从系统应用详情页回来后再次判断
@@ -44,17 +42,18 @@ class PermissionFetchUI : Activity() {
                     openPermission(this, it, REQUESTCODE)
                     return
                 } else {
-                    //拒绝授权
-                    showPermissions(this, permissionName, REQUESTCODE) { result ->
-                        if (!result) {
-                            return@showPermissions
+                    if (isAutoTip) {
+                        //拒绝授权
+                        showPermissions(this, permissionName, REQUESTCODE) { result ->
+                            if (!result) {
+                                return@showPermissions
+                            }
+
+                            //如果点击了取消，则返回拒绝的结果
+                            finishAtty(false)
                         }
-                        if (isAllWaysRequest) {
-                            //如果点击了取消，则再次打开权限
-                            checkPermission()
-                        } else {
-                            finish()
-                        }
+                    } else {
+                        finishAtty(false)
                     }
                     return
                 }
@@ -87,32 +86,24 @@ class PermissionFetchUI : Activity() {
         if (rc == REQUESTCODE && isOpenPermisson(grantResults) && isOpenPermisson(this, permissions)) {
             checkPermission()
         } else {
-            var flag = false
-            //如果不是强制的权限，则用户从系统权限申请框回来后不作处理
-            if (isAllWaysRequest) {
-                //勾选了对话框中”Don’t ask again”的选项, 返回false,则走自定义弹窗；否则不走自定义弹窗，去请求系统弹窗
-                for (deniedPermission in permissions) {
-                    flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        shouldShowRequestPermissionRationale(deniedPermission)
-                    } else {
-                        true
-                    }
-                    if (!flag) {
-                        //拒绝授权
-                        showPermissions(this, permissionName, REQUESTCODE) {
-                            if (!it) return@showPermissions
-
-                            //如果点击了取消，则再次打开权限
-                            checkPermission()
-                        }
-                        return
-                    }
+            //勾选了对话框中”Don’t ask again”的选项, 返回false,则走自定义弹窗；否则不走自定义弹窗，去请求系统弹窗
+            for (deniedPermission in permissions) {
+                val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    shouldShowRequestPermissionRationale(deniedPermission)
+                } else {
+                    true
                 }
-                if (flag)
-                //如果点击了取消，则再次打开权限
-                    checkPermission()
-            } else {
-                finishAtty(false)
+                if (!flag && isAutoTip) {
+                    //拒绝授权
+                    showPermissions(this, permissionName, REQUESTCODE) {
+                        if (!it) return@showPermissions
+
+                        //如果点击了取消，则返回拒绝的结果
+                        finishAtty(false)
+                    }
+                } else {
+                    finishAtty(false)
+                }
             }
         }
     }

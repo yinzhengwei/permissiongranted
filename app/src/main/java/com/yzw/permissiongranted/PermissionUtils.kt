@@ -40,7 +40,7 @@ object PermissionUtils {
      * @param context 上下文
      * @param permissionName 权限集合名称（例如：相机）
      * @param permission 权限集合
-     * @param isAllWaysRequest 是否强制
+     * @param isAutoTip 是否显示提示框
      * @param permissionGrantedCallback 权限申请的回调
      */
 
@@ -48,7 +48,7 @@ object PermissionUtils {
         context: Activity,
         permission: Array<String>,
         permissionName: String,
-        isAllWaysRequest: Boolean,
+        isAutoTip: Boolean,
         permissionGrantedCallback: PermissionGrantedCallback?
     ) {
         notify = permissionGrantedCallback
@@ -60,7 +60,7 @@ object PermissionUtils {
             context.startActivity(Intent(context, PermissionFetchUI::class.java).apply {
                 putExtra("psn", permission)
                 putExtra("permissionName", permissionName)
-                putExtra("isAllWaysRequest", isAllWaysRequest)
+                putExtra("isAutoTip", isAutoTip)
             })
         }
     }

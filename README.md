@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 dependencies {
 
-	implementation 'com.github.yinzhengwei:permissiongranted:17.0.0'
+	implementation 'com.github.yinzhengwei:permissiongranted:18.0.0'
 	
 }
 
@@ -49,7 +49,7 @@ PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : Permiss
     }
 })
 
-方式三（这里的第四个参数表示是否强制用户打开权限）：
+方式三（这里的第四个参数表示是否自动显示提示框）：
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", false, object : PermissionGrantedCallback {
     override fun granted() {
         Log.d("permissionCheck", "同意")
