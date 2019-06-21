@@ -39,7 +39,7 @@ class PermissionFetchUI : Activity() {
             if (!isOpenPermisson(this, it)) {
                 // 缺少权限时, 申请权限
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    openPermission(this, it, REQUESTCODE)
+                    openPermission(this, psn, REQUESTCODE)
                     return
                 } else {
                     if (isAutoTip) {
