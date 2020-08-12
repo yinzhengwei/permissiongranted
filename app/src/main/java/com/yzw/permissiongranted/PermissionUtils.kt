@@ -10,9 +10,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Binder
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.PermissionChecker
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
