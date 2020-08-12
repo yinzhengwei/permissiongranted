@@ -71,7 +71,8 @@ object PermissionList{
     //    LOCATION（位置）
     var permission_LOCATION = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+        //,
 //        Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
 //        Manifest.permission.LOCATION_HARDWARE
     )
