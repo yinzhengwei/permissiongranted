@@ -6,26 +6,21 @@ Android动态权限检测和申请管理
 Step 1. Add the JitPack repository to your build file
 
 Add it in your root build.gradle at the end of repositories:
-
+```
 allprojects {
-
 	repositories {
-	
 		...
-		
 		maven { url 'https://jitpack.io' }
-		
 	}
-	
 }
-
+```
 Step 2. Add the dependency
-
+```
 dependencies {
 
 	implementation 'com.github.yinzhengwei:permissiongranted:19.2.0'
-	
 }
+```
 
 # 代码使用方式
 
@@ -42,6 +37,7 @@ PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", null)
 ```
 
 方式二：
+```
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : PermissionGrantedCallback {
     override fun granted() {
         Log.d("permissionCheck", "同意")
@@ -50,8 +46,10 @@ PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : Permiss
         Log.d("permissionCheck", "拒绝")
     }
 })
+```
 
 方式三（这里的第四个参数表示是否自动显示提示框）：
+```
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", false, object : PermissionGrantedCallback {
     override fun granted() {
         Log.d("permissionCheck", "同意")
@@ -60,7 +58,7 @@ PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", false, object : 
         Log.d("permissionCheck", "拒绝")
     }
 })
-
+```
 
 
 # 补充说明
