@@ -37,7 +37,9 @@ dependencies {
 参数四是操作结果的回调)：
 
 方式一：
+```
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", null)
+```
 
 方式二：
 PermissionUtils.permissionCheck(this, permission_CAMERA, "xxx", object : PermissionGrantedCallback {
